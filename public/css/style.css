@@ -60,10 +60,6 @@ body {
     align-items: center;
 }
 
-
-
-/* Cards */
-
 .listing-card {
     border: none !important;
     box-shadow: none !important;
@@ -87,7 +83,6 @@ body {
     text-decoration: none;
 }
 
-/* Card Effect  */
 .card-img-overlay {
     opacity: 0;
 }
@@ -97,19 +92,16 @@ body {
    background-color: white;
 }
 
-/* New Page  */
 .add-btn {
     background-color: #fe424d !important;
     border: none !important;
 }
 
-/* Edit Page  */
 .edit-btn {
     background-color: #fe424d !important;
     border: none !important;
 }
 
-/* Show Page */
 .show-img {
     height: 30vh;
 }
@@ -123,9 +115,7 @@ body {
     padding-right: 0;
 }
 
-
-/* Map */
 #map {
     height: 400px;
-    width : 80vh;
+    width: 100%;
 }
