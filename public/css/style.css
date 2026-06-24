@@ -103,7 +103,7 @@ body {
 }
 
 .show-img {
-    height: 30vh;
+    height: 400px;
 }
 
 .btns {
@@ -117,5 +117,5 @@ body {
 
 #map {
     height: 400px;
-    width : 80vw;
+    width : 40vw;
 }
