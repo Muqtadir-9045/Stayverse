@@ -16,7 +16,6 @@ router
 .post(
     isLoggedIn,
     upload.single("listing[image]"), 
-
     wrapAsync(listingController.createListing)
 );
 
@@ -33,12 +32,10 @@ router
 )
 .delete(isLoggedIn , isOwner , wrapAsync(listingController.destroyListing));
 
-
 router.get(
     "/:id/edit" ,
     isLoggedIn ,
     isOwner , 
     wrapAsync(listingController.renderEditFrom)
 );
-
 module.exports = router;

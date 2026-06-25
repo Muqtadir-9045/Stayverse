@@ -16,7 +16,6 @@ const listingSchema = new Schema({
     location : String,
     country : String,
     
-    // DAY 52 - 11: Add categories field for filtering
     categories : [
         {
             type : String,
@@ -35,7 +34,6 @@ const listingSchema = new Schema({
             ],
         }
     ],
-    
     reviews : [
         {
             type : Schema.Types.ObjectId,
@@ -51,13 +49,11 @@ const listingSchema = new Schema({
         type : {
             type : String,
             enum : ["Point"],
-            required : true,
         },
         coordinates : {
             type : [Number],
-            required : true,
+        },
     },
-},
 });
 
 listingSchema.post("findOneAndDelete" , async (listing) => {
@@ -65,6 +61,5 @@ listingSchema.post("findOneAndDelete" , async (listing) => {
         await Review.deleteMany({ _id : { $in : listing.reviews } });
     }
 });
-
 const Listing = mongoose.model("Listing" , listingSchema);
 module.exports = Listing;

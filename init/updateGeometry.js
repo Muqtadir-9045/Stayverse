@@ -8,7 +8,7 @@ const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const mapToken = process.env.MAP_TOKEN;
 const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const MONGO_URL = process.env.ATLASDB_URL;
 
 main()
   .then(() => {
@@ -24,8 +24,12 @@ async function main() {
 
 const updateGeometry = async () => {
   try {
-    const listingsWithoutGeometry = await Listing.find({ 
-      geometry: { $exists: false } 
+    const listingsWithoutGeometry = await Listing.find({
+      $or: [
+        { geometry: { $exists: false } },
+        { "geometry.coordinates": { $exists: false } },
+        { "geometry.coordinates": { $size: 0 } },
+      ]
     });
 
     console.log(`Found ${listingsWithoutGeometry.length} listings without geometry`);

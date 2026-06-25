@@ -5,7 +5,7 @@ if(process.env.NODE_ENV != "production") {
 const mongoose = require("mongoose");
 const Listing = require("../models/listing.js");
 
-const MONGO_URL = "mongodb://127.0.0.1:27017/wanderlust";
+const MONGO_URL = process.env.ATLASDB_URL;
 
 main()
   .then(() => {
@@ -19,6 +19,7 @@ async function main() {
   await mongoose.connect(MONGO_URL);
 }
 
+// Category assignments based on listing titles and descriptions
 const categoryMapping = {
     "Cozy Beachfront Cottage": ["pools", "iconic_cities"],
     "Modern Loft in Downtown": ["rooms", "iconic_cities"],
@@ -59,9 +60,11 @@ const addCategories = async () => {
     console.log(`Found ${listings.length} listings to update\n`);
 
     for (let listing of listings) {
+      // Get categories from mapping, or assign based on keywords
       let categories = categoryMapping[listing.title];
 
       if (!categories) {
+        // If title not in mapping, assign based on keywords
         categories = [];
 
         if (listing.title.toLowerCase().includes("mountain") || 
@@ -95,6 +98,7 @@ const addCategories = async () => {
           categories.push("boats");
         }
         
+        // Default to rooms if no category assigned
         if (categories.length === 0) {
           categories.push("rooms");
         }

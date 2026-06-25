@@ -6,13 +6,10 @@ const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 module.exports.index = async (req,res) => {
     let { category } = req.query;
     let query = {};
-
     if (category) {
         query.categories = category;
     }
-
     const allListings = await Listing.find(query);
-    
     res.render("listings/index", { allListings, category }); 
 }; 
 
@@ -23,7 +20,6 @@ module.exports.renderNewForm = (req,res) => {
 module.exports.showListing = async(req,res) => {
     let {id} = req.params;
     const listing = await Listing.findById(id)
-        //Jab user kisi image ya title par click karta hai, toh us listing ki unique ID ke basis par server uski full details show.ejs mein render karta hai using findById().
     .populate({
         path : "reviews" , 
         populate : {
@@ -31,15 +27,12 @@ module.exports.showListing = async(req,res) => {
         },
     })
     .populate("owner");
- 
     if(!listing) {
         req.flash("error" , "Listing you requested for does not exist!");
         res.redirect("/listings");
     }
     res.render("listings/show.ejs" , {listing});
 }
-
-
 
 module.exports.createListing = async(req,res,next) => {
     let response = await geocodingClient
@@ -57,9 +50,7 @@ module.exports.createListing = async(req,res,next) => {
         const newListing = new Listing(req.body.listing);
         newListing.owner = req.user._id;        
         newListing.image = { url , filename };
-
         newListing.geometry = response.body.features[0].geometry;
-        
         let savedListing =await newListing.save();
         console.log(savedListing);
         req.flash("success" , "New Listing Created!");
@@ -91,18 +82,9 @@ module.exports.updateListing = async (req , res) => {
         let url = req.file.path;
         let filename = req.file.filename;
         listing.image = { url , filename };
+        await listing.save();
     }
-
-    let response = await geocodingClient
-        .forwardGeocode({
-            query: req.body.listing.location,
-            limit: 1,
-        })
-        .send();
-    listing.geometry = response.body.features[0].geometry;
-
-    await listing.save();
-    req.flash("success" , "Listing Updated!");
+    req.flash("success" , "Listing Updates!");
     res.redirect(`/listings/${id}`);
 }
 
