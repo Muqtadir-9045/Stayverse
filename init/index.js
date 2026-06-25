@@ -32,7 +32,7 @@ const initDB = async () => {
     let owner = await User.findOne({ username: ownerData.username });
     if (!owner) {
       owner = new User({ username: ownerData.username, email: ownerData.email });
-      await User.register(owner, "9867");
+      await User.register(owner, process.env.SEED_PASSWORD);
       console.log(`Created user: ${ownerData.username}`);
     }
 
