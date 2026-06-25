@@ -1,4 +1,5 @@
 <style>
+  /* Search styles — disabled, restore when search is reimplemented
   .search-btn {
     background-color: #fe424d;
     color : #fff;
@@ -12,7 +13,7 @@
 
   .search-btn i {
     display: inline;
-    margin-right: 0.5rem; 
+    margin-right: 0.5rem;
   }
 
   .search-inp {
@@ -20,6 +21,7 @@
     padding: 0.5rem 3rem 0.5rem 3rem;
     font-size: 1rem;
   }
+  */
 </style>
 
 <nav class="navbar navbar-expand-md bg-body-light border-bottom sticky-top">
@@ -29,7 +31,8 @@
     class="navbar-toggler" 
     type="button" 
     data-bs-toggle="collapse" 
-    data-bs-target="#navbarNav" 
+    data-bs-target="#navbarNavAltMarkup"
+    aria-controls="navbarNavAltMarkup"
     >
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -38,18 +41,20 @@
           <a class="nav-link" href="/listings">Explore</a>
     </div>
 
+    <!-- Search box — disabled, restore when search is reimplemented
     <div class="navbar-nav ms-auto">
       <form class="d-flex" role="search">
-      <input
-      class="form-control me-2 search-inp" 
-      type="search" 
-      placeholder="Search destinations" 
-      />
-      <button class="btn search-btn" type="submit">
-        <i class="fa-solid fa-magnifying-glass"></i>Search
-      </button>
-    </form>
+        <input
+          class="form-control me-2 search-inp"
+          type="search"
+          placeholder="Search destinations"
+        />
+        <button class="btn search-btn" type="submit">
+          <i class="fa-solid fa-magnifying-glass"></i>Search
+        </button>
+      </form>
     </div>
+    -->
 
     <div class="navbar-nav ms-auto">
       <a class="nav-link" href="/listings/new">Become a Host</a>
