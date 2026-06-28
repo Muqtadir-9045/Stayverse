@@ -24,7 +24,7 @@
 
         <div class="mb-3">
             Original Listing Image <br />
-            <img src="<%= originalImageUrl %>" width="250px"/>
+            <img src="<%= originalImageUrl %>" style="max-width: 100%; width: 250px;"/>
         </div>
 
 
@@ -211,7 +211,9 @@
             </div>
         </div>
 
-        <button class="btn btn-dark edit-btn mt-3 mb-2">Edit</button>
+        <div class="d-grid d-md-block mt-3 mb-2">
+            <button class="btn btn-dark edit-btn">Edit</button>
+        </div>
     </form>
     </div>
 </div>

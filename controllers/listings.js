@@ -9,7 +9,7 @@ module.exports.index = async (req,res) => {
     if (category) {
         query.categories = category;
     }
-    const allListings = await Listing.find(query);
+    const allListings = await Listing.find(query).sort({ createdAt: -1 });
     res.render("listings/index", { allListings, category }); 
 }; 
 
@@ -76,15 +76,24 @@ module.exports.updateListing = async (req , res) => {
         throw new ExpressError(400 , "Send Valid Data for Listing");
     }
     let { id } = req.params;
+
+    let response = await geocodingClient
+        .forwardGeocode({
+            query: req.body.listing.location,
+            limit: 1,
+        })
+        .send();
+
     let listing = await Listing.findByIdAndUpdate(id , { ...req.body.listing });
+    listing.geometry = response.body.features[0].geometry;
 
     if(typeof req.file !== "undefined") {
         let url = req.file.path;
         let filename = req.file.filename;
         listing.image = { url , filename };
-        await listing.save();
     }
-    req.flash("success" , "Listing Updates!");
+    await listing.save();
+    req.flash("success" , "Listing Updated!");
     res.redirect(`/listings/${id}`);
 }
 

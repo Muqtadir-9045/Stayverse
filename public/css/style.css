@@ -13,7 +13,7 @@ body {
 }
 /* Navbar */
 .navbar {
-    height: 5rem;
+    min-height: 5rem;
     background-color: white;
 }
 
@@ -52,7 +52,8 @@ body {
 
 .f-info{
     text-align: center;
-    height: 8rem;
+    min-height: 8rem;
+    padding: 1.5rem 0;
     background-color: #ebebeb;
     display: flex;
     flex-wrap: wrap;
@@ -69,14 +70,21 @@ body {
     border-radius: 1rem !important;
     width: 100% !important;
     object-fit: cover !important;
+    height: 20rem;
 }
 
-.card-body {
+.listing-card .card-body {
     padding: 0 !important;
 }
 
 .card-text p {
     font-weight: 400;
+}
+
+.review-comment {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .listing-link {
@@ -97,6 +105,10 @@ body {
     border: none !important;
 }
 
+.btns .btn {
+    min-width: 5.5rem;
+}
+
 .edit-btn {
     background-color: #fe424d !important;
     border: none !important;
@@ -105,6 +117,7 @@ body {
 .show-img {
     height: 400px;
     object-fit: cover;
+    max-width: 100%;
 }
 
 .btns {
@@ -130,5 +143,101 @@ body {
 
     #map {
         height: 250px;
+    }
+
+    .navbar-nav .nav-link {
+        padding-top: 0.75rem;
+        padding-bottom: 0.75rem;
+    }
+}
+
+@media (max-width: 575px) {
+    .card-img-top {
+        height: 13rem !important;
+    }
+}
+
+@media (min-width: 1440px) {
+    .navbar .container-fluid {
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    .f-info > * {
+        max-width: 1400px;
+    }
+}
+
+/* Delete Confirmation Modal */
+.delete-modal-content {
+    border-radius: 1rem;
+    border: none;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
+
+.delete-modal-header {
+    background-color: #222222;
+    color: #fff;
+    padding: 1rem 1.25rem;
+    border-bottom: none;
+}
+
+.delete-modal-title {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.delete-modal-body {
+    padding: 1.5rem 1.25rem;
+    font-size: 1rem;
+    color: #222222;
+}
+
+.delete-modal-footer {
+    padding: 0.75rem 1.25rem 1.25rem;
+    border-top: none;
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+}
+
+.delete-modal-btn-no {
+    background-color: #ebebeb;
+    color: #222222;
+    border: none;
+    min-width: 4.5rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+}
+
+.delete-modal-btn-no:hover {
+    background-color: #d5d5d5;
+    color: #222222;
+}
+
+.delete-modal-btn-yes {
+    background-color: #fe424d;
+    color: #fff;
+    border: none;
+    min-width: 4.5rem;
+    font-weight: 500;
+    border-radius: 0.5rem;
+}
+
+.delete-modal-btn-yes:hover {
+    background-color: #e0343e;
+    color: #fff;
+}
+
+@media (max-width: 400px) {
+    .delete-modal-footer {
+        flex-direction: column-reverse;
+    }
+
+    .delete-modal-btn-no,
+    .delete-modal-btn-yes {
+        width: 100%;
+        text-align: center;
     }
 }

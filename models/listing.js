@@ -54,7 +54,7 @@ const listingSchema = new Schema({
             type : [Number],
         },
     },
-});
+}, { timestamps: true });
 
 listingSchema.post("findOneAndDelete" , async (listing) => {
     if (listing) {

@@ -1,14 +1,16 @@
-mapboxgl.accessToken = mapToken;
+if (!coordinates) {
+    document.getElementById('map').innerHTML = '<p class="text-muted p-3">Location not available for this listing.</p>';
+} else {
+    mapboxgl.accessToken = mapToken;
 
     const map = new mapboxgl.Map({
-        container: 'map', // container ID
-        style: 'mapbox://styles/mapbox/streets-v12', 
-        center:  coordinates, // starting position [lng, lat]. Note that lat must be set between -90 and 90
-        zoom: 9 // starting zoom
-});
+        container: 'map',
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: coordinates,
+        zoom: 9
+    });
 
-console.log(coordinates);
-
-const marker = new mapboxgl.Marker({ color: 'red' })
-    .setLngLat(coordinates) // Set marker at the listing's coordinates
-    .addTo(map);
+    new mapboxgl.Marker({ color: 'red' })
+        .setLngLat(coordinates)
+        .addTo(map);
+}

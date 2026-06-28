@@ -1,7 +1,7 @@
 <% layout("layouts/boilerplate") %>
 <script>
     const mapToken = "<%= process.env.MAP_TOKEN %>";
-    const coordinates = <%- JSON.stringify(listing.geometry.coordinates) %>;
+    const coordinates = <%- (listing.geometry && listing.geometry.coordinates && listing.geometry.coordinates.length) ? JSON.stringify(listing.geometry.coordinates) : 'null' %>;
 </script>
     <div class="row mt-3">
         <div class="col-12 col-md-8 offset-md-2">
@@ -31,8 +31,11 @@
         class="btn btn-dark edit-btn"
         >Edit</a>
 
-        <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE" class="d-inline">
-            <button class="btn btn-dark ms-2">Delete</button>
+        <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE" class="d-inline" id="deleteListingForm">
+            <button type="button" class="btn btn-dark"
+                data-bs-toggle="modal"
+                data-bs-target="#deleteConfirmModal"
+                data-form-id="deleteListingForm">Delete</button>
         </form>
     </div>
 
@@ -75,7 +78,6 @@
                 <textarea
                 name="review[comment]"
                 id="comment"
-                cols="30"
                 rows="5"
                 class="form-control"
                 required
@@ -91,35 +93,75 @@
         <% } %>
         
 
-        <% if(listing.reviews.length > 0) { %> 
-        <div class="row">
-            <p><b>All Reviews</b></p>
+        <% if(listing.reviews.length > 0) { %>
+        <div class="row g-3">
+            <div class="col-12"><p><b>All Reviews</b></p></div>
             <% for(review of listing.reviews) { %>
-        <div class="card col-5 ms-3 mb-3">
-            <div class="card-body">
-                <h5 class="card-title">@ <%= review.author.username %> </h5>
-                <p 
-                class="starability-result card-text" 
-                data-rating="<%= review.rating %>"
-                ></p>
-                <p class="card-text"><%= review.comment %></p>
-                <form
-                class="mb-3"
-                method="POST"
-                action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE"
-                >
-                <button class="btn btn-sm btn-dark">Delete</button>
-            </form>
+            <div class="col-12 col-md-6">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@ <%= review.author.username %></h5>
+                        <p class="starability-result card-text" data-rating="<%= review.rating %>"></p>
+                        <p class="card-text review-comment"><%= review.comment %></p>
+                        <form
+                        class="mb-3"
+                        method="POST"
+                        action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE"
+                        id="deleteReview-<%= review._id %>"
+                        >
+                            <button type="button" class="btn btn-sm btn-dark"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteConfirmModal"
+                                data-form-id="deleteReview-<%= review._id %>">Delete</button>
+                        </form>
+                    </div>
+                </div>
             </div>
+            <% } %>
         </div>
-         <% } %>
-    </div>
-    <% } %>
+        <% } %>
     </div>
             <div class="col-12 col-md-8 offset-md-2 mb-3">
                 <h3>Where you'll be</h3>
                 <div id="map"></div>
             </div>
 </div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content delete-modal-content">
+            <div class="modal-header delete-modal-header">
+                <h5 class="modal-title delete-modal-title" id="deleteConfirmModalLabel">
+                    <i class="fa-solid fa-triangle-exclamation me-2"></i>Confirm Delete
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body delete-modal-body">
+                Are you sure you want to delete this?
+            </div>
+            <div class="modal-footer delete-modal-footer">
+                <button type="button" class="btn delete-modal-btn-no" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn delete-modal-btn-yes" id="confirmDeleteBtn">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let pendingDeleteForm = null;
+
+    document.getElementById('deleteConfirmModal').addEventListener('show.bs.modal', function(event) {
+        const trigger = event.relatedTarget;
+        pendingDeleteForm = document.getElementById(trigger.dataset.formId);
+    });
+
+    document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+        if (pendingDeleteForm) {
+            bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal')).hide();
+            pendingDeleteForm.submit();
+        }
+    });
+</script>
 
 <script src="/js/map.js"></script>
