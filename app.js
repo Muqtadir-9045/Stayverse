@@ -7,6 +7,7 @@ const app = express();
 const mongoose = require("mongoose");
 const path = require("path");
 const methodOverride = require("method-override");
+const compression = require("compression");
 const ejsMate = require("ejs-mate");
 const ExpressError = require("./utils/ExpressError.js");
 const imageUrl = require("./utils/imageUrl.js");
@@ -43,7 +44,8 @@ app.use(express.urlencoded({extended: true}));
 app.use(methodOverride("_method"));
 app.engine("ejs" , ejsMate);
 app.locals.imageUrl = imageUrl;
-app.use(express.static(path.join(__dirname , "/public")));
+app.use(compression());
+app.use(express.static(path.join(__dirname , "/public") , { maxAge : "7d" }));
 
 // lightweight route for uptime pings - registered before session so it never touches the DB
 app.get("/health", (req, res) => {
