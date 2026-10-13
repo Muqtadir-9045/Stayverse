@@ -166,4 +166,7 @@
     });
 </script>
 
-<script src="/js/map.js"></script>
+<!-- Mapbox is only needed on this page, so it is loaded here instead of in the layout -->
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.17.0/mapbox-gl.css" rel="stylesheet" />
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.17.0/mapbox-gl.js" defer></script>
+<script src="/js/map.js" defer></script>
