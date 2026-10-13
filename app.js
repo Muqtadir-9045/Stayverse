@@ -43,6 +43,11 @@ app.use(methodOverride("_method"));
 app.engine("ejs" , ejsMate);
 app.use(express.static(path.join(__dirname , "/public")));
 
+// lightweight route for uptime pings - registered before session so it never touches the DB
+app.get("/health", (req, res) => {
+    res.status(200).send("ok");
+});
+
 const store = MongoStore.create({
     mongoUrl : dbUrl,
     crypto : {
@@ -59,7 +64,7 @@ const sessionOptions = {
     store,
     secret :  process.env.SECRET,
     resave : false,
-    saveUninitialized : true,
+    saveUninitialized : false,
     cookie : {
         expires : Date.now() + 7 * 24 * 60 * 60 * 1000,
         maxAge : 7 * 24 * 60 * 60 * 1000,

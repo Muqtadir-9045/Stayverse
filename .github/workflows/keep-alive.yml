@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: Ping Stayverse
         run: |
-          curl --max-time 120 --retry 2 --retry-delay 5 -sS -o /dev/null -w "HTTP %{http_code} in %{time_total}s\n" https://stayverse-website.onrender.com/ || echo "Ping did not get a response in time"
+          curl --max-time 120 --retry 2 --retry-delay 5 -sS -o /dev/null -w "HTTP %{http_code} in %{time_total}s\n" https://stayverse-website.onrender.com/health || echo "Ping did not get a response in time"
