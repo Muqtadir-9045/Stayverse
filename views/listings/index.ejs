@@ -141,55 +141,55 @@
 </div>
 </div>
 <% if (category) { %>
-<div class="filter-label">Showing <%= allListings.length %> <%= category.replace(/_/g, ' ') %> listings
+<div class="filter-label">Showing <%= total %> <%= category.replace(/_/g, ' ') %> listings
 <a href="/listings" style="margin-left: 1rem; text-decoration: underline; color: #fe424d;">Clear Filter</a>
 </div>
 <% } %>
-<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 mt-3">
-    <% allListings.forEach((listing, i) => { %>
-        <div class="col">
-                <div class="card listing-card h-100">
-                <a href="/listings/<%= listing._id %>" class="listing-link">
-                      <div class="card col listing-card">
-                    <img
-                        src="<%= imageUrl(listing.image.url, 600) %>"
-                        <% if (i >= 3) { %>loading="lazy"<% } %>
-                        decoding="async"
-                        class="card-img-top"
-                        alt="listing_image"
-                    />  
-                    <div class="card-img-overlay"></div>
-                    <div class="card-body">
-                        <p class="card-text">
-                            <b><%= listing.title %></b><br/>
-                            <% if (listing.price !== null && listing.price !== undefined) { %>
-                            &#8377;<%= listing.price.toLocaleString("en-IN") %> / night
-                            <% } else { %>
-                            <span>Price not available</span>
-                            <% } %>
-                            <i class="tax-info"> &nbsp; &nbsp; +18% GST</i>
-                        </p>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-    <% }) %>
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 mt-3" id="listingGrid">
+    <%- include("../includes/listingCards.ejs", { listings : allListings, offset : 0 }) %>
 </div>
+<% if (hasMore) { %>
+<div class="text-center my-4">
+    <button class="btn btn-dark" id="loadMoreBtn" data-next-page="2">Load more</button>
+</div>
+<% } %>
 <script>
     function filterListings(categoryName) {
         window.location.href = `/listings?category=${categoryName}`;
     }
 
     let taxSwitch = document.getElementById("flexSwitchCheckDefault");
-    taxSwitch.addEventListener("click", () => {
-        let taxInfo = document.getElementsByClassName("tax-info");
-        for (info of taxInfo) {
-            if(info.style.display != "inline") {
-                info.style.display = "inline";
-            } else {
-                info.style.display = "none";
+    function applyTaxToggle() {
+        for (let info of document.getElementsByClassName("tax-info")) {
+            info.style.display = taxSwitch.checked ? "inline" : "none";
+        }
+    }
+    taxSwitch.addEventListener("change", applyTaxToggle);
+
+    let loadMoreBtn = document.getElementById("loadMoreBtn");
+    if (loadMoreBtn) {
+        loadMoreBtn.addEventListener("click", async () => {
+            let params = new URLSearchParams(window.location.search);
+            params.set("page", loadMoreBtn.dataset.nextPage);
+            params.set("partial", "1");
+            loadMoreBtn.disabled = true;
+            loadMoreBtn.textContent = "Loading...";
+            try {
+                let res = await fetch(`/listings?${params}`);
+                if (!res.ok) throw new Error("request failed");
+                document.getElementById("listingGrid").insertAdjacentHTML("beforeend", await res.text());
+                applyTaxToggle();
+                if (res.headers.get("X-Has-More") === "true") {
+                    loadMoreBtn.dataset.nextPage = Number(loadMoreBtn.dataset.nextPage) + 1;
+                    loadMoreBtn.disabled = false;
+                    loadMoreBtn.textContent = "Load more";
+                } else {
+                    loadMoreBtn.remove();
+                }
+            } catch (e) {
+                loadMoreBtn.disabled = false;
+                loadMoreBtn.textContent = "Load more";
             }
-        }    
         });
+    }
 </script>

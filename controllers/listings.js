@@ -3,14 +3,34 @@ const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
 const mapToken = process.env.MAP_TOKEN;
 const geocodingClient = mbxGeocoding({ accessToken: mapToken });
 
+const PAGE_SIZE = 12;
+
 module.exports.index = async (req,res) => {
     let { category } = req.query;
+    let page = Math.max(parseInt(req.query.page) || 1, 1);
     let query = {};
     if (category) {
         query.categories = category;
     }
-    const allListings = await Listing.find(query).sort({ createdAt: -1 });
-    res.render("listings/index", { allListings, category }); 
+    const offset = (page - 1) * PAGE_SIZE;
+    // fetch one extra to know whether a next page exists; lean() skips building full mongoose documents
+    const [listings, total] = await Promise.all([
+        Listing.find(query)
+            .select("title price image")
+            .sort({ createdAt: -1 })
+            .skip(offset)
+            .limit(PAGE_SIZE + 1)
+            .lean(),
+        category ? Listing.countDocuments(query) : Promise.resolve(0),
+    ]);
+    const hasMore = listings.length > PAGE_SIZE;
+    const allListings = listings.slice(0, PAGE_SIZE);
+
+    if (req.query.partial) {
+        res.set("X-Has-More", String(hasMore));
+        return res.render("listings/cards", { allListings, offset });
+    }
+    res.render("listings/index", { allListings, category, total, hasMore }); 
 }; 
 
 module.exports.renderNewForm = (req,res) => {

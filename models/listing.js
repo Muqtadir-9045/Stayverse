@@ -61,5 +61,8 @@ listingSchema.post("findOneAndDelete" , async (listing) => {
         await Review.deleteMany({ _id : { $in : listing.reviews } });
     }
 });
+listingSchema.index({ createdAt: -1 });
+listingSchema.index({ categories: 1, createdAt: -1 });
+
 const Listing = mongoose.model("Listing" , listingSchema);
 module.exports = Listing;

@@ -91,9 +91,11 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser()); 
  
 app.use((req , res , next) => {
-    res.locals.success = req.flash("success");
+    // only touch flash when it exists - otherwise req.flash() creates a session for every visitor
+    const hasFlash = req.session && req.session.flash;
+    res.locals.success = hasFlash ? req.flash("success") : [];
     
-    res.locals.error = req.flash("error");
+    res.locals.error = hasFlash ? req.flash("error") : [];
 
     res.locals.currUser = req.user;
     next();
