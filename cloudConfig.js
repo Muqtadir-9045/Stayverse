@@ -12,6 +12,8 @@ const storage = new CloudinaryStorage({
   params: {
     folder:  "wanderlust_DEV", 
     allowed_formats: ['jpeg', 'png', 'jpg'],
+    // cap stored images at 1600px wide so huge phone photos are not kept at full size
+    transformation: [{ width: 1600, crop: "limit", quality: "auto" }],
   },
 });
 
